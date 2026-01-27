@@ -1,0 +1,25 @@
+{
+  "name": "wethemakers-assignment",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Abdelrhmanx74/wethemakers-assignment.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Abdelrhmanx74/wethemakers-assignment/issues"
+  },
+  "homepage": "https://github.com/Abdelrhmanx74/wethemakers-assignment#readme"
+}
