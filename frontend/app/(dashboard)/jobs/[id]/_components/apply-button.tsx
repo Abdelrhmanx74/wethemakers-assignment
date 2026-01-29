@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { Send, Upload, FileText, X } from "lucide-react";
+import { Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -25,46 +25,16 @@ interface ApplyButtonProps {
 
 export function ApplyButton({ jobId, jobTitle }: ApplyButtonProps) {
   const router = useRouter();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [resumeFile, setResumeFile] = useState<File | null>(null);
+  const [resume, setResume] = useState("");
   const [coverLetter, setCoverLetter] = useState("");
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      // Validate file type
-      const allowedTypes = [
-        "application/pdf",
-        "application/msword",
-        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      ];
-      if (!allowedTypes.includes(file.type)) {
-        toast.error("Please upload a PDF or Word document");
-        return;
-      }
-      // Validate file size (5MB max)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB");
-        return;
-      }
-      setResumeFile(file);
-    }
-  };
-
-  const handleRemoveFile = () => {
-    setResumeFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!resumeFile) {
-      toast.error("Please upload your resume");
+    if (!resume.trim()) {
+      toast.error("Please enter your resume");
       return;
     }
 
@@ -75,24 +45,15 @@ export function ApplyButton({ jobId, jobTitle }: ApplyButtonProps) {
 
     setIsSubmitting(true);
     try {
-      // Convert file to base64 data URL
-      const reader = new FileReader();
-      const resumeUrl = await new Promise<string>((resolve, reject) => {
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(resumeFile);
-      });
-
       await createApplication({
         jobId,
-        resumeUrl,
-        resumeName: resumeFile.name,
+        resume: resume.trim(),
         coverLetter: coverLetter.trim(),
       });
 
       toast.success("Application submitted!");
       setOpen(false);
-      setResumeFile(null);
+      setResume("");
       setCoverLetter("");
       router.push("/applications");
     } catch (error: unknown) {
@@ -124,46 +85,21 @@ export function ApplyButton({ jobId, jobTitle }: ApplyButtonProps) {
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            {/* Resume Upload */}
+            {/* Resume Text */}
             <div className="space-y-2">
-              <Label>Resume / CV</Label>
-              {resumeFile ? (
-                <div className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50">
-                  <FileText className="h-8 w-8 text-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{resumeFile.name}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {(resumeFile.size / 1024).toFixed(1)} KB
-                    </p>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleRemoveFile}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg cursor-pointer hover:border-primary/50 hover:bg-muted/50 transition-colors"
-                >
-                  <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                  <p className="text-sm font-medium">Click to upload</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    PDF or Word (max 5MB)
-                  </p>
-                </div>
-              )}
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept=".pdf,.doc,.docx"
-                onChange={handleFileChange}
-                className="hidden"
+              <Label htmlFor="resume">Resume / CV</Label>
+              <Textarea
+                id="resume"
+                placeholder="Paste your resume here or describe your experience, skills, and qualifications..."
+                value={resume}
+                onChange={(e) => setResume(e.target.value)}
+                rows={6}
+                className="resize-none"
               />
+              <p className="text-xs text-muted-foreground">
+                Include your work experience, education, skills, and relevant
+                achievements.
+              </p>
             </div>
 
             {/* Cover Letter */}
@@ -189,7 +125,7 @@ export function ApplyButton({ jobId, jobTitle }: ApplyButtonProps) {
             >
               Cancel
             </Button>
-            <Button type="submit" disabled={isSubmitting || !resumeFile}>
+            <Button type="submit" disabled={isSubmitting || !resume.trim()}>
               {isSubmitting ? "Submitting..." : "Submit Application"}
             </Button>
           </DialogFooter>

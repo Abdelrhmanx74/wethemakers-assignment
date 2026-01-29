@@ -12,7 +12,6 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  Download,
 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -254,18 +253,10 @@ export function AdminApplicationsListClient({
             {/* Resume */}
             <div>
               <p className="text-sm font-medium mb-2">Resume</p>
-              {selectedApplication?.resumeUrl ? (
-                <a
-                  href={selectedApplication.resumeUrl}
-                  download={selectedApplication.resumeName || "resume"}
-                  className="flex items-center gap-2 p-3 rounded-lg border hover:bg-muted transition-colors"
-                >
-                  <FileText className="h-5 w-5 text-primary" />
-                  <span className="text-sm truncate flex-1">
-                    {selectedApplication.resumeName || "Resume"}
-                  </span>
-                  <Download className="h-4 w-4 text-muted-foreground" />
-                </a>
+              {selectedApplication?.resume ? (
+                <div className="p-3 rounded-lg bg-muted text-sm whitespace-pre-wrap max-h-48 overflow-y-auto">
+                  {selectedApplication.resume}
+                </div>
               ) : (
                 <p className="text-sm text-muted-foreground">No resume</p>
               )}

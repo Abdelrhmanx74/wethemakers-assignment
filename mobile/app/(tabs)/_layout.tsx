@@ -1,35 +1,93 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Drawer } from "expo-router/drawer";
+import { Redirect } from "expo-router";
+import React from "react";
+import { View, ActivityIndicator } from "react-native";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { IconSymbol } from "@/components/ui/icon-symbol";
+import { CustomDrawerContent } from "@/components/ui/custom-drawer-content";
+import { UserMenuButton } from "@/components/user-menu-button";
+import { Colors } from "@/constants/theme";
+import { useColorScheme } from "@/hooks/use-color-scheme";
+import { useAuth } from "@/stores/auth-store";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const colors = Colors[colorScheme ?? "light"];
+  const { isAuthenticated, isLoading, user } = useAuth();
+
+  if (isLoading) {
+    return (
+      <View className="flex-1 items-center justify-center bg-background">
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Redirect href="/(auth)/login" />;
+  }
+
+  // Redirect admins to admin tabs
+  if (user?.role === "admin") {
+    return <Redirect href={"/(admin)" as any} />;
+  }
 
   return (
-    <Tabs
+    <Drawer
+      drawerContent={(props) => <CustomDrawerContent {...props} />}
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
+        headerStyle: { backgroundColor: colors.card },
+        headerTintColor: colors.foreground,
+        headerTitleStyle: { fontWeight: "600" },
+        headerRight: () => <UserMenuButton />,
+        drawerStyle: { backgroundColor: colors.card },
+        drawerActiveTintColor: colors.foreground,
+        drawerInactiveTintColor: colors.mutedForeground,
+      }}
+    >
+      <Drawer.Screen
         name="index"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: "Dashboard",
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol size={size ?? 22} name="house.fill" color={color} />
+          ),
         }}
       />
-      <Tabs.Screen
+      <Drawer.Screen
+        name="jobs"
+        options={{
+          title: "Jobs",
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol size={size ?? 22} name="briefcase.fill" color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="applications"
+        options={{
+          title: "Applications",
+          drawerIcon: ({ color, size }) => (
+            <IconSymbol size={size ?? 22} name="doc.text.fill" color={color} />
+          ),
+        }}
+      />
+      <Drawer.Screen
+        name="profile"
+        options={{
+          title: "",
+          drawerLabel: () => null,
+          drawerItemStyle: { height: 0 },
+        }}
+      />
+      <Drawer.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: "",
+          drawerLabel: () => null,
+          drawerItemStyle: { height: 0 },
         }}
       />
-    </Tabs>
+    </Drawer>
   );
 }

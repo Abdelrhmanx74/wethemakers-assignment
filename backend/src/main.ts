@@ -11,8 +11,8 @@ async function bootstrap() {
   app.use(urlencoded({ extended: true, limit: "15mb" }));
 
   app.enableCors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
-    credentials: true,
+    origin: true,
+    // credentials: true,
   });
 
   app.useGlobalPipes(

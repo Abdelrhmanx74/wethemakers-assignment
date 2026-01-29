@@ -3,14 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
-import {
-  ChevronLeft,
-  ChevronRight,
-  User,
-  Mail,
-  FileText,
-  Eye,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, User, Mail, Eye } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -258,22 +251,10 @@ export function JobApplicationsClient({
           <div className="space-y-6 py-4">
             <div>
               <h3 className="font-semibold mb-2">Resume / CV</h3>
-              {selectedApplication?.resumeUrl ? (
-                <a
-                  href={selectedApplication.resumeUrl}
-                  download={selectedApplication.resumeName || "resume"}
-                  className="flex items-center gap-3 p-3 rounded-lg border bg-muted/50 hover:bg-muted transition-colors"
-                >
-                  <FileText className="h-8 w-8 text-primary shrink-0" />
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">
-                      {selectedApplication.resumeName || "Resume"}
-                    </p>
-                    <p className="text-xs text-muted-foreground">
-                      Click to download
-                    </p>
-                  </div>
-                </a>
+              {selectedApplication?.resume ? (
+                <div className="bg-muted p-4 rounded-lg whitespace-pre-wrap text-sm max-h-64 overflow-y-auto">
+                  {selectedApplication.resume}
+                </div>
               ) : (
                 <div className="bg-muted p-4 rounded-lg text-sm text-muted-foreground">
                   No resume provided

@@ -92,8 +92,7 @@ export async function getApplication(id: string): Promise<Application> {
 
 export async function createApplication(data: {
   jobId: string;
-  resumeUrl?: string;
-  resumeName?: string;
+  resume: string;
   coverLetter: string;
 }): Promise<Application> {
   const session = await auth();
@@ -115,12 +114,6 @@ export async function createApplication(data: {
 
       if (status === 409) {
         throw new Error("You have already applied for this job");
-      }
-
-      if (status === 413) {
-        throw new Error(
-          "Your resume file is too large to upload. Please upload a smaller file (PDF/DOC).",
-        );
       }
 
       if (payload && typeof payload === "object" && "message" in payload) {

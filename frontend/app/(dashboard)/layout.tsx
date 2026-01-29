@@ -20,7 +20,7 @@ export default async function DashboardLayout({
   const navItems = [
     { href: "/dashboard", label: "Dashboard", icon: "Home" },
     { href: "/jobs", label: "Jobs", icon: "Briefcase" },
-    { href: "/applications", label: "Applications", icon: "FileText" },
+    { href: "/applications", label: "My Applications", icon: "FileText" },
   ];
 
   return (

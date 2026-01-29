@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsOptional } from "class-validator";
+import { IsString, IsNotEmpty } from "class-validator";
 
 export class CreateApplicationDto {
   @IsString()
@@ -6,12 +6,8 @@ export class CreateApplicationDto {
   jobId: string;
 
   @IsString()
-  @IsOptional()
-  resumeUrl?: string;
-
-  @IsString()
-  @IsOptional()
-  resumeName?: string;
+  @IsNotEmpty()
+  resume: string;
 
   @IsString()
   @IsNotEmpty()

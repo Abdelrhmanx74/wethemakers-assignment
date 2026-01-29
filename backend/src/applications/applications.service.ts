@@ -27,7 +27,7 @@ export class ApplicationsService {
   }
 
   async create(createApplicationDto: CreateApplicationDto, userId: string) {
-    const { jobId, resumeUrl, resumeName, coverLetter } = createApplicationDto;
+    const { jobId, resume, coverLetter } = createApplicationDto;
 
     // Check if job exists and is open
     const job = await this.prisma.job.findUnique({
@@ -59,8 +59,7 @@ export class ApplicationsService {
     try {
       return await this.prisma.application.create({
         data: {
-          resumeUrl,
-          resumeName,
+          resume,
           coverLetter,
           jobId,
           userId,

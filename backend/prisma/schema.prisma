@@ -54,8 +54,7 @@ model Job {
 
 model Application {
   id          String            @id @default(uuid())
-  resumeUrl   String?
-  resumeName  String?
+  resume      String
   coverLetter String
   status      ApplicationStatus @default(submitted)
   createdAt   DateTime          @default(now())

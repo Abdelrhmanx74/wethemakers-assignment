@@ -42,8 +42,7 @@ export interface Job {
 
 export interface Application {
   id: string;
-  resumeUrl?: string | null;
-  resumeName?: string | null;
+  resume: string;
   coverLetter: string;
   status: "submitted" | "reviewed" | "rejected";
   createdAt: string;
